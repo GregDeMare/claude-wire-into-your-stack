@@ -22,4 +22,6 @@ echo "Summarise the uncommitted changes in under 120 words, then run the test su
     --max-turns 8
 ```
 
-I allowed only `Read`, `git diff`, `git status` and the exact `npm test`. I left out `Edit`, `Write` and unscoped `Bash`, and capped the run at 8 turns. Anything not on the list is denied, since nobody is there to approve it. The prompt goes on stdin because `--allowedTools` takes a list and swallows a prompt placed after it.
+I allowed only `Read`, `git diff`, `git status` and the exact `npm test`. I left out `Edit`, `Write` and unscoped `Bash`, and capped the run at 8 turns.
+
+`--allowedTools` only pre-approves the listed tools; it is not a deny-list inverse. I passed no `--permission-mode`, so the run used the default mode, where a tool that isn't pre-approved needs approval. Headless there is nobody to give it, so the call is refused. I checked this with the same flags: a `Write` and a `touch` command (neither listed) were both denied and nothing was created. That's the restriction it provides, and it is not a general "everything unlisted is blocked" guarantee: default mode also lets read-only shell commands such as `date` run without being listed. If a hard block matters, add `--disallowedTools` for the tools you never want used. The prompt goes on stdin because `--allowedTools` takes a list and swallows a prompt placed after it.
